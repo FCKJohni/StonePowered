@@ -4,6 +4,7 @@ package dev.teamhelios.stonepowered;
 import dev.teamhelios.stonepowered.console.ConsoleHandler;
 import dev.teamhelios.stonepowered.pebble.PebbleCreatorExtractor;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
+import io.javalin.core.util.JavalinLogger;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -15,6 +16,7 @@ public class StonePowered {
 
     private final Soil soil;
     public static ExecutorService executorService = Executors.newCachedThreadPool();
+    private ConsoleHandler consoleHandler;
 
 
     public static void main(String[] args) {
@@ -22,8 +24,12 @@ public class StonePowered {
     }
 
     public StonePowered() {
+        System.setProperty("java.util.logging.SimpleFormatter.format",
+                "[%1$tT] [%4$-7s] %5$s %n");
+        JavalinLogger.startupInfo = false;
         try {
-            new ConsoleHandler().handleConsole();
+            consoleHandler = new ConsoleHandler(this);
+            consoleHandler.handleConsole();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -35,12 +41,13 @@ public class StonePowered {
         soil = new Soil(this);
         soil.initLoader();
         HeliosLogger.info("StonePowered is ready! Preparing Shutdown hook");
+        this.consoleHandler.start();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             HeliosLogger.info("StonePowered is shutting down...");
 
             soil.getDirtLoader().shutdown();
-
             executorService.shutdown();
+            consoleHandler.stop();
         }));
         HeliosLogger.success("StonePowered has been loaded!");
     }

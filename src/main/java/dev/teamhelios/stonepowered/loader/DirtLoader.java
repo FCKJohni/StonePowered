@@ -1,14 +1,15 @@
 package dev.teamhelios.stonepowered.loader;
 
 import dev.teamhelios.stonepowered.StonePowered;
+import dev.teamhelios.stonepowered.command.CommandLoader;
 import dev.teamhelios.stonepowered.loader.utils.ILoader;
 import dev.teamhelios.stonepowered.loader.utils.LoaderStatus;
 import dev.teamhelios.stonepowered.pebble.PebbleManager;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
-import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.util.logging.Level;
 
 public class DirtLoader {
 
@@ -21,6 +22,7 @@ public class DirtLoader {
     static {
         loaderClasses.add(PebbleManager.class);
         loaderClasses.add(WebsocketLoader.class);
+        loaderClasses.add(CommandLoader.class);
     }
 
     public DirtLoader(StonePowered stonePowered) {
@@ -42,11 +44,9 @@ public class DirtLoader {
     }
 
     public void handleUpdate(ILoader loader, LoaderStatus status) {
-        //check level of status and use appropriate method of HeliosLogger
-
-        if (status.getLevel().equals(Level.WARN))
+        if (status.getLevel().equals(Level.WARNING))
             HeliosLogger.warn(String.format("%s changed its Status to %s!", loader.getClass().getSimpleName(), status));
-        if (status.getLevel().equals(Level.ERROR))
+        if (status.getLevel().equals(Level.SEVERE))
             HeliosLogger.error(String.format("%s changed its Status to %s!", loader.getClass().getSimpleName(), status));
     }
 

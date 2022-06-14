@@ -1,8 +1,11 @@
 package dev.teamhelios.stonepowered.console;
 
+import dev.teamhelios.stonepowered.command.CommandLoader;
 import dev.teamhelios.stonepowered.console.utils.Task;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
+
+import java.util.Arrays;
 
 /**
  * @author CloudNet
@@ -24,6 +27,8 @@ public class ConsoleReadThread extends Thread {
                 this.currentTask.complete(line);
                 this.currentTask = null;
             }
+            String[] split = line.split(" ");
+            consoleHandler.getStonePowered().getSoil().getDirtLoader().getLoader(CommandLoader.class).getCommandRegistry().execute(split[0], Arrays.copyOfRange(split, 1, split.length));
         }
     }
 
@@ -44,5 +49,9 @@ public class ConsoleReadThread extends Thread {
         }
 
         return this.currentTask;
+    }
+
+    public void end() {
+        this.interrupt();
     }
 }

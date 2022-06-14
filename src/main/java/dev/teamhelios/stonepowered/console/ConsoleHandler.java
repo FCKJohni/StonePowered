@@ -1,6 +1,7 @@
 package dev.teamhelios.stonepowered.console;
 
-import org.checkerframework.checker.units.qual.C;
+import dev.teamhelios.stonepowered.StonePowered;
+import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import org.jline.reader.LineReader;
 import org.jline.reader.impl.LineReaderImpl;
@@ -10,6 +11,8 @@ import org.jline.utils.InfoCmp;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author CloudNet
@@ -19,16 +22,23 @@ public class ConsoleHandler {
     private static final String USER = System.getProperty("user.name");
     private static final String HISTORY_FILE = System.getProperty("stonepowered.history.file", "local/.consolehistory");
     private String prompt = System.getProperty("stonepowered.prompt", "&c%user%&r@&7StonePowered &f=> &r");
-    private Terminal terminal;
-    private ConsoleReadThread consoleReadThread = new ConsoleReadThread(this);
-    private LineReaderImpl lineReader;
+    private final Terminal terminal;
+    private final ConsoleReadThread consoleReadThread = new ConsoleReadThread(this);
+    private final LineReaderImpl lineReader;
+    private StonePowered stonePowered;
 
     public static LineReaderImpl globalLineReader;
 
-    public ConsoleHandler() throws Exception{
-        try{
+    public static ConsoleHandler instance;
+
+    private final Lock printLock = new ReentrantLock(true);
+
+    public ConsoleHandler(StonePowered stonePowered) throws Exception {
+        try {
             AnsiConsole.systemInstall();
-        }catch (Throwable ignored){}
+        } catch (Throwable ignored) {
+        }
+        this.stonePowered = stonePowered;
 
         this.terminal = TerminalBuilder.builder().system(true).encoding(StandardCharsets.UTF_8).build();
         this.lineReader = new InternalLineReader(this.terminal);
@@ -47,10 +57,16 @@ public class ConsoleHandler {
         this.lineReader.variable(LineReader.HISTORY_FILE_SIZE, 2500);
         this.lineReader.variable(LineReader.HISTORY_FILE, Path.of(HISTORY_FILE));
         this.lineReader.variable(LineReader.COMPLETION_STYLE_LIST_BACKGROUND, "inverse");
+        this.lineReader.option(LineReader.Option.USE_FORWARD_SLASH, true);
 
         setGlobalLineReader(lineReader);
 
+        instance = this;
+
         this.updatePrompt();
+    }
+
+    public void start() {
         this.consoleReadThread.start();
     }
 
@@ -73,7 +89,7 @@ public class ConsoleHandler {
         }
     }
 
-    public void handleConsole(){
+    public void handleConsole() {
 
     }
 
@@ -97,5 +113,31 @@ public class ConsoleHandler {
 
     public static void setGlobalLineReader(LineReaderImpl globalLineReader) {
         ConsoleHandler.globalLineReader = globalLineReader;
+    }
+
+    public ConsoleHandler forceWriteLine(String text) {
+        this.printLock.lock();
+        try {
+            // ensure that the given text is formatted properly
+            text = ConsoleColor.toColouredString('&', text);
+            if (!text.endsWith(System.lineSeparator())) {
+                text += System.lineSeparator();
+            }
+
+            this.print(Ansi.ansi().eraseLine(Ansi.Erase.ALL).toString() + '\r' + text + Ansi.ansi().reset().toString());
+            // increases the amount of lines the running animations is off the current printed lines
+        } finally {
+            this.printLock.unlock();
+        }
+
+        return this;
+    }
+
+    public void stop() {
+        consoleReadThread.end();
+    }
+
+    public StonePowered getStonePowered() {
+        return stonePowered;
     }
 }

@@ -25,14 +25,14 @@ public class PebbleConfigFinder {
             HeliosLogger.error("No Pebble config found! Terminating");
             Runtime.getRuntime().exit(0);
         } else {
-            HeliosLogger.info("Found " + configs.size() + " Pebble configs");
+            HeliosLogger.info("Found " + configs.size() + " Pebble config" + (configs.size() == 1 ? "" : "s!") + "!");
         }
         return handleConfigs(configs);
     }
 
     public List<Pebble> handleConfigs(List<Path> configs) {
         List<Pebble> result = new ArrayList<>();
-        HeliosLogger.info("Handling " + configs.size() + " Pebble configs");
+        HeliosLogger.info("Handling " + configs.size() + " Pebble config" + (configs.size() == 1 ? "" : "s!") + "!");
         configs.forEach(p -> {
             HoconConfigurationLoader loader = HoconConfigurationLoader
                     .builder()

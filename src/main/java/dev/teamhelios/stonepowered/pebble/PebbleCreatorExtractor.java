@@ -7,6 +7,7 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class PebbleCreatorExtractor {
 
@@ -14,7 +15,7 @@ public class PebbleCreatorExtractor {
         HeliosLogger.info("Extracting PebbleCreator...");
         Path rootPath = StonePowered.getRootDirectory();
         String os = getFileToExtract();
-        HeliosLogger.info("Extracting PebbleCreator for " + os);
+        HeliosLogger.info("Extracting PebbleCreator for " + getOS());
         Path path = rootPath.resolve(os);
         if (!Files.exists(path)) {
             try (InputStream inputStream = PebbleCreatorExtractor.class.getResourceAsStream("/" + os)) {
@@ -22,17 +23,27 @@ public class PebbleCreatorExtractor {
                     throw new RuntimeException("Could not find " + os);
                 }
                 Files.copy(inputStream, path);
-                HeliosLogger.success("Extracted PebbleCreator for " + os);
+                HeliosLogger.success("Extracted PebbleCreator for " + getOS());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public String getFileToExtract() {
+    public String getOS() {
         if (SystemUtils.IS_OS_WINDOWS) {
-            return "createPebble.bat";
+            return "Windows";
         } else if (SystemUtils.IS_OS_LINUX) {
+            return "Linux";
+        } else {
+            throw new RuntimeException("Unsupported OS");
+        }
+    }
+
+    public String getFileToExtract() {
+        if (Objects.equals(getOS(), "Windows")) {
+            return "createPebble.bat";
+        } else if (Objects.equals(getOS(), "Linux")) {
             return "createPebble.sh";
         } else {
             throw new RuntimeException("Unsupported OS");

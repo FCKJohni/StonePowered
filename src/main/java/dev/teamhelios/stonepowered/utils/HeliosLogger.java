@@ -1,49 +1,44 @@
 package dev.teamhelios.stonepowered.utils;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import dev.teamhelios.stonepowered.console.ConsoleHandler;
+
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.SimpleFormatter;
 
 public class HeliosLogger {
 
-    private static Logger logger;
 
     private HeliosLogger() {
 
     }
 
-    private static void setup() {
-        logger = LogManager.getLogger("HeliosLogger");
-
-    }
-
     public static void info(String var1) {
-        if (logger == null) setup();
-        logger.info(var1);
+        ConsoleHandler.instance.forceWriteLine(format("INFO", "&8" + var1 + "&r"));
     }
 
     public static void warn(String var1) {
-        if (logger == null) setup();
-        logger.warn(var1);
+        ConsoleHandler.instance.forceWriteLine(format("WARNING", "&6" + var1 + "&r"));
     }
 
     public static void error(String var1) {
-        if (logger == null) setup();
-        logger.error(var1);
+        ConsoleHandler.instance.forceWriteLine(format("SEVERE", "&4" + var1 + "&r"));
     }
 
     public static void debug(String var1) {
-        if (logger == null) setup();
-        logger.debug(var1);
+        ConsoleHandler.instance.forceWriteLine(format("DEBUG", var1));
     }
 
     public static void success(String var1) {
-        if (logger == null) setup();
-        logger.log(Level.getLevel("SUCCESS"), var1);
+        ConsoleHandler.instance.forceWriteLine(format("FINEST", "&a" + var1 + "&r"));
+    }
+
+    private static String format(String level, String message) {
+        SimpleFormatter simpleFormatter = new SimpleFormatter();
+        return simpleFormatter.format(new LogRecord(Level.parse(level.toUpperCase()), message));
     }
 
     public static String f(String var1, Object... var2) {
-        if (logger == null) setup();
         return String.format(var1, var2);
     }
 

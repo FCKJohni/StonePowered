@@ -20,7 +20,7 @@ public class WebsocketLoader extends ILoader {
 
     @Override
     public void initLoader() {
-        notifyUpdate(LoaderStatus.LOADED, callback);
+        notifyUpdate(LoaderStatus.CONSTRUCTING, callback);
         javalin = Javalin.create();
         javalin._conf.showJavalinBanner = false;
         javalin.start(9999);
@@ -29,6 +29,7 @@ public class WebsocketLoader extends ILoader {
             stonePowered.getSoil().getClientHandler().register(client);
             client.onClose(() -> stonePowered.getSoil().getClientHandler().unregister(client));
         });
+        notifyUpdate(LoaderStatus.LOADED, callback);
     }
 
     @Override

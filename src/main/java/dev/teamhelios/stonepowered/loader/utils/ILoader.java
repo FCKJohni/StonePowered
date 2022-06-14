@@ -4,7 +4,7 @@ import dev.teamhelios.stonepowered.StonePowered;
 
 public abstract class ILoader {
 
-    public LoaderStatus currentStatus = LoaderStatus.CONSTRUCTING;
+    public LoaderStatus currentStatus = LoaderStatus.PREFLIGHT;
 
     public abstract void setup(Runnable<LoaderStatus> callback, StonePowered stonePowered);
 

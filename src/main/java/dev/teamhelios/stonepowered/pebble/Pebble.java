@@ -31,7 +31,7 @@ public class Pebble {
 
 
     public void startPebble() {
-        HeliosLogger.info(f("Starting Pebble: %s", name));
+        HeliosLogger.info(f("Starting Pebble: &b%s&r", name));
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command(cmd);
         processBuilder.directory(workingDir);
@@ -51,7 +51,7 @@ public class Pebble {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    HeliosLogger.info(f("Pebble \u001b[36m%s\u001b[0m: %s", name, line));
+                    HeliosLogger.info(f("Pebble &b%s&r: %s", name, line));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -64,7 +64,7 @@ public class Pebble {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    HeliosLogger.error(f("Pebble \u001b[36m%s\u001b[0m: %s", name, line));
+                    HeliosLogger.error(f("Pebble &b%s&r: %s", name, line));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
