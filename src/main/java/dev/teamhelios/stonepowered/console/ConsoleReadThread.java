@@ -1,9 +1,12 @@
 package dev.teamhelios.stonepowered.console;
 
-import dev.teamhelios.stonepowered.utils.Task;
+import dev.teamhelios.stonepowered.console.utils.Task;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
 
+/**
+ * @author CloudNet
+ */
 public class ConsoleReadThread extends Thread {
 
     private final ConsoleHandler consoleHandler;

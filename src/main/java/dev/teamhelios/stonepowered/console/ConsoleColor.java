@@ -5,6 +5,9 @@ import org.fusesource.jansi.Ansi;
 import java.awt.*;
 import java.util.regex.Pattern;
 
+/**
+ * @author CloudNet
+ */
 public enum ConsoleColor {
 
     BLACK("black", '0', Ansi.ansi().reset().fg(Ansi.Color.BLACK).toString()),

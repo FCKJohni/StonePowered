@@ -1,7 +1,10 @@
-package dev.teamhelios.stonepowered.utils;
+package dev.teamhelios.stonepowered.console.utils;
 
 import java.util.concurrent.*;
 
+/**
+ * @author CloudNet
+ */
 public class Task<V> extends CompletableFuture<V> {
     private static final ExecutorService SERVICE = Executors.newCachedThreadPool();
 

@@ -11,6 +11,9 @@ import org.jline.utils.InfoCmp;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
+/**
+ * @author CloudNet
+ */
 public class ConsoleHandler {
 
     private static final String USER = System.getProperty("user.name");

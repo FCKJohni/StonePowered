@@ -3,6 +3,9 @@ package dev.teamhelios.stonepowered.console;
 import org.jline.reader.impl.LineReaderImpl;
 import org.jline.terminal.Terminal;
 
+/**
+ * @author CloudNet
+ */
 public class InternalLineReader extends LineReaderImpl {
 
     public InternalLineReader(Terminal terminal) {
