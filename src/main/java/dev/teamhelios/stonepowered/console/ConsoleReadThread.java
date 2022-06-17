@@ -1,11 +1,10 @@
 package dev.teamhelios.stonepowered.console;
 
-import dev.teamhelios.stonepowered.command.CommandLoader;
+import dev.teamhelios.stonepowered.command.StoneCommandResult;
 import dev.teamhelios.stonepowered.console.utils.Task;
+import dev.teamhelios.stonepowered.utils.HeliosLogger;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
-
-import java.util.Arrays;
 
 /**
  * @author CloudNet
@@ -27,8 +26,13 @@ public class ConsoleReadThread extends Thread {
                 this.currentTask.complete(line);
                 this.currentTask = null;
             }
-            String[] split = line.split(" ");
-            consoleHandler.getStonePowered().getSoil().getDirtLoader().getLoader(CommandLoader.class).getCommandRegistry().execute(split[0], Arrays.copyOfRange(split, 1, split.length));
+            StoneCommandResult commandResult = consoleHandler.getStonePowered().getSoil().getCommandManager().dispatch(line);
+            if (!commandResult.success()) {
+                HeliosLogger.error(commandResult.message());
+            } else {
+                if (commandResult.silent()) continue;
+                HeliosLogger.success(commandResult.message());
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package dev.teamhelios.stonepowered.loader;
 
 import dev.teamhelios.stonepowered.StonePowered;
-import dev.teamhelios.stonepowered.command.CommandLoader;
 import dev.teamhelios.stonepowered.loader.utils.ILoader;
 import dev.teamhelios.stonepowered.loader.utils.LoaderStatus;
 import dev.teamhelios.stonepowered.pebble.PebbleManager;
@@ -22,7 +21,6 @@ public class DirtLoader {
     static {
         loaderClasses.add(PebbleManager.class);
         loaderClasses.add(WebsocketLoader.class);
-        loaderClasses.add(CommandLoader.class);
     }
 
     public DirtLoader(StonePowered stonePowered) {

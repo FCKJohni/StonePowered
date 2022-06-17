@@ -23,7 +23,8 @@ public class PebbleConfigSerializer implements TypeSerializer<Pebble> {
         String name = pebbleNode.node("name").getString();
         List<String> cmd = pebbleNode.node("cmd").getList(String.class);
         UUID uuid = pebbleNode.node("uuid").get(UUID.class, UUID.randomUUID());
-        return new Pebble(name, cmd, uuid);
+        boolean autoRun = pebbleNode.node("autoRun").getBoolean(false);
+        return new Pebble(name, cmd, uuid, autoRun);
     }
 
     @Override
@@ -36,5 +37,6 @@ public class PebbleConfigSerializer implements TypeSerializer<Pebble> {
         pebbleNode.node("name").set(obj.getName());
         pebbleNode.node("cmd").setList(String.class, obj.getCmd());
         pebbleNode.node("uuid").set(obj.getUuid());
+        pebbleNode.node("autoRun").set(obj.shouldAutoRun());
     }
 }
