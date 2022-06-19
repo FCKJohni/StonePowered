@@ -2,10 +2,15 @@ package dev.teamhelios.stonepowered.pebble;
 
 import dev.teamhelios.stonepowered.StonePowered;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -17,12 +22,15 @@ public class Pebble {
 
 
     private final String name;
-    private final List<String> cmd;
+    private List<String> cmd;
     private final UUID uuid;
-    private final boolean autoRun;
+    private boolean autoRun;
     private File workingDir;
     private Process process;
     private File currentLog;
+
+    private HoconConfigurationLoader loader;
+    private ConfigurationNode node;
 
     public Pebble(String name, List<String> cmd, UUID uuid, boolean autoRun) {
         this.name = name;
@@ -156,5 +164,40 @@ public class Pebble {
 
     public boolean shouldAutoRun() {
         return autoRun;
+    }
+
+    public void setLoader(HoconConfigurationLoader loader) {
+        this.loader = loader;
+    }
+
+    public void setNode(ConfigurationNode node) {
+        this.node = node;
+    }
+
+    public HoconConfigurationLoader getLoader() {
+        return loader;
+    }
+
+    public ConfigurationNode getNode() {
+        return node;
+    }
+
+    public void setAutoRun(boolean parseBoolean) {
+        autoRun = parseBoolean;
+        save();
+    }
+
+    public void setCommand(String cmd){
+        this.cmd = Arrays.asList(cmd.split(" "));
+        save();
+    }
+
+    private void save(){
+        try {
+            node.set(this);
+            loader.save(node);
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

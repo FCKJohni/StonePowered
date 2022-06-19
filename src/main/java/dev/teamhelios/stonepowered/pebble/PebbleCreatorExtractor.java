@@ -15,9 +15,9 @@ public class PebbleCreatorExtractor {
         HeliosLogger.info("Extracting PebbleCreator...");
         Path rootPath = StonePowered.getRootDirectory();
         String os = getFileToExtract();
-        HeliosLogger.info("Extracting PebbleCreator for " + getOS());
         Path path = rootPath.resolve(os);
         if (!Files.exists(path)) {
+            HeliosLogger.info("Extracting PebbleCreator for " + getOS());
             try (InputStream inputStream = PebbleCreatorExtractor.class.getResourceAsStream("/" + os)) {
                 if (inputStream == null) {
                     throw new RuntimeException("Could not find " + os);
@@ -27,6 +27,8 @@ public class PebbleCreatorExtractor {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            HeliosLogger.info("PebbleCreator already exists for " + getOS());
         }
     }
 

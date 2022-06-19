@@ -29,7 +29,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class StoneSubCommand<S> extends AbstractSubCommand<S> {
 
+
     public StoneSubCommand(@NotNull final StoneSubCommandProcessor<S> processor, @NotNull final String parentName, @NotNull final ExecutionProvider executionProvider) {
         super(processor, parentName, executionProvider);
     }
+
 }

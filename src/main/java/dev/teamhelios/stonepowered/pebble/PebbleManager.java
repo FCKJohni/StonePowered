@@ -7,6 +7,7 @@ import dev.teamhelios.stonepowered.loader.utils.LoaderStatus;
 import dev.teamhelios.stonepowered.loader.utils.Runnable;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,11 +70,6 @@ public class PebbleManager extends ILoader {
         return pebbles;
     }
 
-    public void test() {
-        this.pebbles.get(0).startPebble();
-        startScreen(this.pebbles.get(0).getUuid());
-    }
-
     public StoneCommandResult startPebble(String pebbleIdentifier) {
         for (Pebble pebble : pebbles) {
             if (pebble.getName().equals(pebbleIdentifier) || pebble.getUuid().toString().equals(pebbleIdentifier)) {
@@ -92,5 +88,15 @@ public class PebbleManager extends ILoader {
             }
         }
         return new StoneCommandResult(false, "Pebble not found!", false);
+    }
+
+    @Nullable
+    public Pebble retrievePebbleByName(String target) {
+        for (Pebble pebble : pebbles) {
+            if (pebble.getName().equals(target)) {
+                return pebble;
+            }
+        }
+        return null;
     }
 }

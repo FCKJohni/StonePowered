@@ -5,7 +5,6 @@ import dev.teamhelios.stonepowered.command.StoneCommandManager;
 import dev.teamhelios.stonepowered.command.sender.StoneSender;
 import dev.teamhelios.stonepowered.commands.PebbleCommand;
 import dev.teamhelios.stonepowered.commands.StopCommand;
-import dev.teamhelios.stonepowered.commands.TestCommand;
 import dev.teamhelios.stonepowered.loader.DirtLoader;
 import dev.teamhelios.stonepowered.pebble.PebbleManager;
 
@@ -22,7 +21,6 @@ public class Soil {
 
     public void initLoader() {
         commandManager.registerCommand(new StopCommand());
-        commandManager.registerCommand(new TestCommand(stonePowered));
         commandManager.registerCommand(new PebbleCommand(stonePowered));
         dirtLoader = new DirtLoader(stonePowered);
         dirtLoader.initLoader();

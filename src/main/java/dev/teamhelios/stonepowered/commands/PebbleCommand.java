@@ -3,11 +3,13 @@ package dev.teamhelios.stonepowered.commands;
 import dev.teamhelios.stonepowered.StonePowered;
 import dev.teamhelios.stonepowered.command.StoneCommandResult;
 import dev.teamhelios.stonepowered.command.sender.StoneSender;
+import dev.teamhelios.stonepowered.pebble.Pebble;
 import dev.teamhelios.stonepowered.pebble.PebbleManager;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
 import dev.triumphteam.cmd.core.BaseCommand;
 import dev.triumphteam.cmd.core.annotation.Command;
 import dev.triumphteam.cmd.core.annotation.Default;
+import dev.triumphteam.cmd.core.annotation.Join;
 import dev.triumphteam.cmd.core.annotation.SubCommand;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -17,7 +19,7 @@ import java.util.UUID;
 @Command("pebble")
 public class PebbleCommand extends BaseCommand {
 
-    private StonePowered stonePowered;
+    private final StonePowered stonePowered;
 
     public PebbleCommand(StonePowered stonePowered) {
         this.stonePowered = stonePowered;
@@ -55,4 +57,25 @@ public class PebbleCommand extends BaseCommand {
             HeliosLogger.info("&cFailed to stop Pebble &6" + pebbleIdentifier + " &c- &7" + result.message());
         }
     }
+
+    @SubCommand("modify")
+    public void handleModify(StoneSender sender, String target, String key, @Join String value) {
+        Pebble pebble = stonePowered.getSoil().getDirtLoader().getLoader(PebbleManager.class).retrievePebbleByName(target);
+        if (pebble == null) {
+            HeliosLogger.error("&cFailed to find Pebble &6" + target);
+            return;
+        }
+        switch (key) {
+            case "autorun" -> {
+                pebble.setAutoRun(Boolean.parseBoolean(value));
+                HeliosLogger.info("&aSuccessfully modified Pebble &6" + target + " &7- &6autorun &7to &6" + value);
+            }
+            case "cmd" -> {
+                pebble.setCommand(value);
+                HeliosLogger.info("&aSuccessfully set command for Pebble &6" + target + " &7- &6cmd &7to &6" + value);
+            }
+            default -> HeliosLogger.error("&cFailed to modify Pebble &6" + target + " &c- &7Unknown key &6" + key);
+        }
+    }
+
 }

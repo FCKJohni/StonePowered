@@ -3,6 +3,7 @@ package dev.teamhelios.stonepowered.pebble;
 import dev.teamhelios.stonepowered.StonePowered;
 import dev.teamhelios.stonepowered.pebble.serializers.PebbleConfigSerializer;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
@@ -41,8 +42,11 @@ public class PebbleConfigFinder {
                                     .register(Pebble.class, PebbleConfigSerializer.INSTANCE)))
                     .path(p).build();
             try {
-                Pebble pebble = loader.load().get(Pebble.class);
+                CommentedConfigurationNode node = loader.load();
+                Pebble pebble = node.get(Pebble.class);
                 pebble.setWorkingDir(p.getParent().toFile());
+                pebble.setLoader(loader);
+                pebble.setNode(node);
                 result.add(pebble);
             } catch (ConfigurateException e) {
                 throw new RuntimeException(e);
