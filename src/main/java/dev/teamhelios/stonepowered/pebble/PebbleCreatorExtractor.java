@@ -2,53 +2,36 @@ package dev.teamhelios.stonepowered.pebble;
 
 import dev.teamhelios.stonepowered.StonePowered;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
-import org.apache.commons.lang3.SystemUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
+import java.nio.file.StandardCopyOption;
 
 public class PebbleCreatorExtractor {
 
     public void extract() {
         HeliosLogger.info("Extracting PebbleCreator...");
         Path rootPath = StonePowered.getRootDirectory();
-        String os = getFileToExtract();
-        Path path = rootPath.resolve(os);
-        if (!Files.exists(path)) {
-            HeliosLogger.info("Extracting PebbleCreator for " + getOS());
-            try (InputStream inputStream = PebbleCreatorExtractor.class.getResourceAsStream("/" + os)) {
-                if (inputStream == null) {
-                    throw new RuntimeException("Could not find " + os);
-                }
-                Files.copy(inputStream, path);
-                HeliosLogger.success("Extracted PebbleCreator for " + getOS());
-            } catch (Exception e) {
-                e.printStackTrace();
+        String jar = "PebbleConfigCreator.jar.temp";
+        String sh = "Creator.sh";
+        Path jarPath = rootPath.resolve(jar.replace(".temp", ""));
+        Path shPath = rootPath.resolve(sh);
+        HeliosLogger.info("Extracting PebbleCreator");
+        extractFile(jarPath, jar);
+        extractFile(shPath, sh);
+    }
+
+    private void extractFile(Path path, String name) {
+        try (InputStream inputStream = PebbleCreatorExtractor.class.getResourceAsStream("/" + name)) {
+            if (inputStream == null) {
+                throw new RuntimeException("Could not find " + name);
             }
-        } else {
-            HeliosLogger.info("PebbleCreator already exists for " + getOS());
-        }
-    }
-
-    public String getOS() {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return "Windows";
-        } else if (SystemUtils.IS_OS_LINUX) {
-            return "Linux";
-        } else {
-            throw new RuntimeException("Unsupported OS");
-        }
-    }
-
-    public String getFileToExtract() {
-        if (Objects.equals(getOS(), "Windows")) {
-            return "createPebble.bat";
-        } else if (Objects.equals(getOS(), "Linux")) {
-            return "createPebble.sh";
-        } else {
-            throw new RuntimeException("Unsupported OS");
+            Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+            HeliosLogger.success("Extracted " + name);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

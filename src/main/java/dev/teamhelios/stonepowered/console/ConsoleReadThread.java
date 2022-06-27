@@ -1,7 +1,6 @@
 package dev.teamhelios.stonepowered.console;
 
 import dev.teamhelios.stonepowered.command.StoneCommandResult;
-import dev.teamhelios.stonepowered.console.utils.Task;
 import dev.teamhelios.stonepowered.utils.HeliosLogger;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
@@ -12,7 +11,6 @@ import org.jline.reader.UserInterruptException;
 public class ConsoleReadThread extends Thread {
 
     private final ConsoleHandler consoleHandler;
-    private Task<String> currentTask;
 
     public ConsoleReadThread(ConsoleHandler consoleHandler) {
         this.consoleHandler = consoleHandler;
@@ -22,10 +20,6 @@ public class ConsoleReadThread extends Thread {
     public void run() {
         String line;
         while (!Thread.interrupted() && (line = this.readLine()) != null) {
-            if (this.currentTask != null) {
-                this.currentTask.complete(line);
-                this.currentTask = null;
-            }
             StoneCommandResult commandResult = consoleHandler.getStonePowered().getSoil().getCommandManager().dispatch(line);
             if (!commandResult.success()) {
                 HeliosLogger.error(commandResult.message());
@@ -47,13 +41,6 @@ public class ConsoleReadThread extends Thread {
         return null;
     }
 
-    protected Task<String> currentTask() {
-        if (this.currentTask == null) {
-            this.currentTask = new Task<>();
-        }
-
-        return this.currentTask;
-    }
 
     public void end() {
         this.interrupt();
